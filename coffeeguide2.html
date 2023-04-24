@@ -1,0 +1,308 @@
+<!doctype html>
+<head>
+	<style>
+	body * {
+		font-size: 16pt;
+		margin: 1rem 1rem 1rem 1rem;
+	}
+	#cup {
+		border: 1px solid black;
+		width: 15rem;
+		height: 30rem;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		align-items: stretch;
+	}
+	#drinkname {
+		visibility: hidden;
+	}
+	#cup * {
+		margin: 0.5rem 0.1rem 0 0.1rem;
+		text-align: center;
+		vertical-align: middle;
+	}
+	#clearbutton {
+		background-color: red;
+	}
+	.drink-component {
+		visibility: collapse;
+		justify-content: center;
+	}
+	#espresso {
+		flex-basis: 3rem;
+		background-color: #56280d;
+		flex-grow: 1;
+		color: #f4d7c1;
+	}
+	#milk {
+		flex-basis: 4rem;
+		background-color: #f4d7c1;
+		flex-grow: 3;
+	}
+	#splashmilk {
+		flex-basis: 3rem;
+		background-color: #e2ddd3;
+		flex-shrink: 1;
+	}
+	#ice {
+		flex-basis: 3rem;
+		background-color: #7091d8;
+		flex-grow: 1;
+	}
+	#whip {
+		flex-basis: 3rem;
+		background-color: #e2ddd3;
+		flex-shrink: 1;
+	}
+	#syrup {
+		flex-basis: 3rem;
+		background-color: #cc702a;
+		flex-shrink: 1;
+	}
+	#topespresso {
+		flex-basis: 3rem;
+		background-color: #56280d;
+		flex-grow: 1;
+		color: #f4d7c1;
+	}
+	#topping {
+		flex-basis: 3rem;
+		background-color: #cc702a;
+		flex-shrink: 1;
+	}
+	#drinkbuttons {
+		display: flex;
+		flex-direction: column;
+	}
+	fieldset * {
+		margin: 0.2rem;
+	}
+	
+	fieldset {
+		width: 800px;
+	}
+	#cupnbuttons {
+		display: flex;
+		flex-direction: row;
+	}
+	
+	#cupnname {
+		display: flex;
+		flex-direction: column;
+	}
+	</style>
+</head>
+<body>
+	<form>
+	<fieldset>
+		<legend>Size: </legend>
+		<div>
+	
+		<input type="radio" id="s0" onclick="clearfunction()" name="size"/>
+		<label>Short</label>
+	  
+		<input type="radio" id="s1" onclick="clearfunction()" name="size"/>
+		<label>Tall</label>
+
+		<input type="radio" id="s2" onclick="clearfunction()" name="size" checked/>
+		<label>Grande</label>
+
+		<input type="radio" id="s3" onclick="clearfunction()" name="size"/>
+		<label>Venti</label>
+	  
+		<input type="radio" id="s5" onclick="clearfunction()" name="size"/>
+		<label>Trenta</label>
+	  
+    </div>
+	
+  </fieldset>
+	<input type="checkbox" id="icedbox" onclick="clearfunction()"/>
+    <label style="color: blue;">Iced?</label>
+</form>
+
+<div id="cupnbuttons">
+
+	<div id="drinkbuttons">
+	<button onclick="buildLatte(getSize())">Latte</button>
+	<button onclick="buildMocha(getSize())">Mocha</button>
+	<button onclick="buildCaramelMacchiato(getSize())">Caramel Macchiato</button>
+	<button onclick="buildFlatWhite(getSize())">Flat White</button>
+	<button onclick="buildAmericano(getSize())">Americano</button>
+	</div>
+	
+	<div id="cupnname">
+	<h1 id="drinkname"></h1>
+	
+	<div id="cup">
+		
+		<div id="topping" class="drink-component"></div>
+		<div id="whip" class="drink-component"></div>
+		<div id="topespresso" class="drink-component"></div>
+		<div id="splashmilk" class="drink-component"></div>
+		<div id="ice" class="drink-component"></div>
+		<div id="milk" class="drink-component"></div>
+		<div id="espresso" class="drink-component"></div>
+		<div id="syrup" class="drink-component"></div>
+	</div>
+	</div>
+</div>
+	
+	<script>	
+	
+	
+	// now same thing but with classes....
+	
+	// charts
+	// standard build: s, t, g, v, vi, tr
+	const hotShots = [1, 1, 2, 2, 3, 0];
+	const hotPumps = [2, 3, 4, 5, 6, 7];
+	const hotSize = [8, 12, 16, 20, 26, 30];
+	
+	// macchiato build: s, t, g, v, vi
+	const cmHotPumps = [1, 2, 3, 4, 5];
+	
+	// americano build: s, t, g, v, vi
+	const aHotShots = [1, 2, 3, 4, 4];
+	
+	// flat white build: s, t, g, v, vi
+	const fwHotShots = [2, 2, 3, 3, 4];
+	
+	class baseDrink { // mommy class
+		constructor(shots, milk, pumps, whip, size, top, syrup, name) {
+			this.shots = shots;
+			this.milk = milk;
+			this.pumps = pumps;
+			this.whip = whip;
+			this.size = size;
+			this.top = top;
+			this.syrup = syrup;
+			this.name = name;
+		}
+	}
+	
+	let errDrink = new baseDrink(0, 0, 0, 0, 0, 0, 0, "Not Available");
+	
+	function getSize() {
+		clearfunction();
+		let sh = document.getElementById("s0");
+		let tl = document.getElementById("s1");
+		let gr = document.getElementById("s2");
+		let vt = document.getElementById("s3");
+		let tr = document.getElementById("s5");
+		let ice = document.getElementById("icedbox");
+		
+		if (sh.checked) {return 0};
+		if (tl.checked) {return 1};
+		if (gr.checked) {return 2};
+		if (vt.checked && ice.checked == false) {return 3};
+		if (vt.checked && ice.checked == true) {return 4};
+		if (tr.checked) {return 5};
+	}
+	
+	// building core drinks
+	
+	function addcomponent(drink){
+		let ice = document.getElementById("icedbox");
+		if (ice.checked) {addice()}
+		if (drink.shots != 0 && drink.name != "Caramel Macchiato") {addshots(drink)} else {addtopespresso(drink)}
+		if (drink.milk != 0) {addmilk(drink)}
+		if (drink.pumps != 0 && drink.syrup != 0) {addsyrup(drink)}
+		if (drink.whip != 0) {addwhip(drink)}
+		if (drink.top != 0) {addtopping(drink)}
+		if (drink.name != "Not Available") {addname(drink)} else {addname(errDrink)}
+	}
+	
+	function buildLatte(size) {
+		if (size == 5) {addname(errDrink); return};
+		let Latte = new baseDrink(hotShots[size], "2% milk", hotPumps[size], 0, hotSize[size], 0, 0, "Latte");
+		addcomponent(Latte);
+		console.log(Latte);
+	}
+	
+	function buildAmericano(size) {
+		if (size == 5) {addname(errDrink); return};
+		let Americano = new baseDrink(aHotShots[size], "water", hotPumps[size], 0, hotSize[size], 0, 0, "Americano");
+		addcomponent(Americano);
+		console.log(Americano);
+	}
+	
+	function buildMocha(size) {
+		if (size == 5) {addname(errDrink); return};
+		let Mocha = new baseDrink(hotShots[size], "2% milk", hotPumps[size], 1, hotSize[size], 0, "mocha", "Mocha");
+		addcomponent(Mocha);
+		console.log(Mocha);
+	}
+	
+	function buildCaramelMacchiato(size) {
+		if (size == 5) {addname(errDrink); return};
+		let CaramelMacchiato = new baseDrink(hotShots[size], "2% milk", cmHotPumps[size], 0, hotSize[size], "caramel drizzle", "vanilla", "Caramel Macchiato");
+		addcomponent(CaramelMacchiato);
+		console.log(CaramelMacchiato);
+	}
+	
+	function buildFlatWhite(size) {
+		if (size == 5) {addname(errDrink); return};
+		let FlatWhite = new baseDrink(fwHotShots[size] + " ristretto", "whole milk", hotPumps[size], 0, hotSize[size], 0, 0, "Flat White");
+		addcomponent(FlatWhite);
+		console.log(FlatWhite);
+	}
+	
+	// add components
+	function addmilk(drink) {
+		document.getElementById("milk").innerHTML = drink.milk;
+		document.getElementById("milk").style.visibility = 'visible';
+	}
+	
+	function addshots(drink) {
+		document.getElementById("espresso").style.visibility = 'visible';
+		document.getElementById("espresso").innerHTML = drink.shots + " espresso";
+	}
+	
+	function addsyrup(drink) {
+		document.getElementById("syrup").style.visibility = 'visible';
+		document.getElementById("syrup").innerHTML = drink.pumps + " " + drink.syrup;
+	}
+	
+	function addwhip(drink) {
+		document.getElementById("whip").style.visibility = 'visible';
+		document.getElementById("whip").innerHTML = "Whip";
+	}
+	
+	function addtopping(drink) {
+		document.getElementById("topping").style.visibility = 'visible';
+		document.getElementById("topping").innerHTML = drink.top;
+	}
+	
+	function addtopespresso(drink) {
+		document.getElementById("topespresso").style.visibility = 'visible';
+		document.getElementById("topespresso").innerHTML = drink.shots + " espresso";
+	}
+	
+	function addice() {
+		document.getElementById("ice").style.visibility = 'visible';
+		document.getElementById("ice").innerHTML = "ice";
+	}
+	
+	function addname(drink) {
+		document.getElementById("drinkname").style.visibility = 'visible';
+		document.getElementById("drinkname").innerHTML = drink.name;
+	}
+	
+	// clear cup
+	
+	function clearfunction() {
+		document.getElementById("espresso").style.visibility = 'collapse';
+		document.getElementById("milk").style.visibility = 'collapse';
+		document.getElementById("syrup").style.visibility = 'collapse';
+		document.getElementById("whip").style.visibility = 'collapse';
+		document.getElementById("topping").style.visibility = 'collapse';
+		document.getElementById("topespresso").style.visibility = 'collapse';
+		document.getElementById("splashmilk").style.visibility = 'collapse';
+		document.getElementById("ice").style.visibility = 'collapse';
+		document.getElementById("drinkname").style.visibility = 'hidden';
+	}
+	
+	</script>
+</body>
+</html>
