@@ -204,45 +204,62 @@
 	
 	function addcomponent(drink){
 		let ice = document.getElementById("icedbox");
-		if (ice.checked) {addice()}
+		if (ice.checked && drink.size > 8) {addice()}
 		if (drink.shots != 0 && drink.name != "Caramel Macchiato") {addshots(drink)} else {addtopespresso(drink)}
 		if (drink.milk != 0) {addmilk(drink)}
 		if (drink.pumps != 0 && drink.syrup != 0) {addsyrup(drink)}
 		if (drink.whip != 0) {addwhip(drink)}
 		if (drink.top != 0) {addtopping(drink)}
 		if (drink.name != "Not Available") {addname(drink)} else {addname(errDrink)}
+		//if (ice.checked == true && drink.size < 12) {document.getElementById("drinkname").innerHTML += " (ice not available for this size)"}
+	}
+	
+	function checkbadsize(size) { // should be NOT TRENTA or NOT ICED SHORT
+		if (size == 5) 
+		{
+		document.getElementById("drinkname").style.visibility = 'visible';
+		document.getElementById("drinkname").innerHTML = "Not Available";
+		return 1
+		}
+		if (size == 0 && document.getElementById("icedbox").checked == true) 
+		{
+		document.getElementById("drinkname").style.visibility = 'visible';
+		document.getElementById("drinkname").innerHTML = "Not Available";
+		return 1
+		}
+		else {return 0};
 	}
 	
 	function buildLatte(size) {
-		if (size == 5) {addname(errDrink); return};
+		if (checkbadsize(size)) {return};
 		let Latte = new baseDrink(hotShots[size], "2% milk", hotPumps[size], 0, hotSize[size], 0, 0, "Latte");
 		addcomponent(Latte);
 		console.log(Latte);
 	}
 	
 	function buildAmericano(size) {
-		if (size == 5) {addname(errDrink); return};
+		if (checkbadsize(size)) {return};
 		let Americano = new baseDrink(aHotShots[size], "water", hotPumps[size], 0, hotSize[size], 0, 0, "Americano");
 		addcomponent(Americano);
 		console.log(Americano);
 	}
 	
 	function buildMocha(size) {
-		if (size == 5) {addname(errDrink); return};
+		if (checkbadsize(size)) {return};
 		let Mocha = new baseDrink(hotShots[size], "2% milk", hotPumps[size], 1, hotSize[size], 0, "mocha", "Mocha");
 		addcomponent(Mocha);
 		console.log(Mocha);
 	}
 	
 	function buildCaramelMacchiato(size) {
-		if (size == 5) {addname(errDrink); return};
+		if (checkbadsize(size)) {return};
 		let CaramelMacchiato = new baseDrink(hotShots[size], "2% milk", cmHotPumps[size], 0, hotSize[size], "caramel drizzle", "vanilla", "Caramel Macchiato");
 		addcomponent(CaramelMacchiato);
 		console.log(CaramelMacchiato);
 	}
 	
 	function buildFlatWhite(size) {
-		if (size == 5) {addname(errDrink); return};
+		if (checkbadsize(size)) {return};
 		let FlatWhite = new baseDrink(fwHotShots[size] + " ristretto", "whole milk", hotPumps[size], 0, hotSize[size], 0, 0, "Flat White");
 		addcomponent(FlatWhite);
 		console.log(FlatWhite);
