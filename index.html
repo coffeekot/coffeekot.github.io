@@ -9,6 +9,9 @@
 		border: 1px solid black;
 		width: 15rem;
 		height: 30rem;
+		display: -webkit-box;
+		display: -webkit-flex;
+		display: -ms-flexbox; 
 		display: flex;
 		flex-direction: column;
 		justify-content: flex-end;
@@ -28,9 +31,9 @@
 	.drink-component {
 		visibility: collapse;
 		justify-content: center;
+		flex-basis: 3rem;
 	}
 	#espresso {
-		flex-basis: 3rem;
 		background-color: #56280d;
 		flex-grow: 1;
 		color: #f4d7c1;
@@ -41,37 +44,34 @@
 		flex-grow: 3;
 	}
 	#splashmilk {
-		flex-basis: 3rem;
 		background-color: #e2ddd3;
 		flex-shrink: 1;
 	}
 	#ice {
-		flex-basis: 3rem;
 		background-color: #7091d8;
 		flex-grow: 1;
 	}
 	#whip {
-		flex-basis: 3rem;
 		background-color: #e2ddd3;
 		flex-shrink: 1;
 	}
 	#syrup {
-		flex-basis: 3rem;
 		background-color: #cc702a;
 		flex-shrink: 1;
 	}
 	#topespresso {
-		flex-basis: 3rem;
 		background-color: #56280d;
 		flex-grow: 1;
 		color: #f4d7c1;
 	}
 	#topping {
-		flex-basis: 3rem;
 		background-color: #cc702a;
 		flex-shrink: 1;
 	}
-	#drinkbuttons {
+	.drinkbuttons {
+		display: -webkit-box;
+		display: -webkit-flex;
+		display: -ms-flexbox; 
 		display: flex;
 		flex-direction: column;
 	}
@@ -83,11 +83,17 @@
 		width: 800px;
 	}
 	#cupnbuttons {
+		display: -webkit-box;
+		display: -webkit-flex;
+		display: -ms-flexbox; 
 		display: flex;
 		flex-direction: row;
 	}
 	
 	#cupnname {
+		display: -webkit-box;
+		display: -webkit-flex;
+		display: -ms-flexbox; 
 		display: flex;
 		flex-direction: column;
 	}
@@ -123,12 +129,14 @@
 
 <div id="cupnbuttons">
 
-	<div id="drinkbuttons">
+	<div class="drinkbuttons">
+	<h1>Espresso Drinks</h1>
 	<button onclick="buildLatte(getSize())">Latte</button>
 	<button onclick="buildMocha(getSize())">Mocha</button>
 	<button onclick="buildCaramelMacchiato(getSize())">Caramel Macchiato</button>
 	<button onclick="buildFlatWhite(getSize())">Flat White</button>
 	<button onclick="buildAmericano(getSize())">Americano</button>
+	<!-- <button onclick="buildShakenEspresso(getSize())">Shaken Espresso</button> -->
 	</div>
 	
 	<div id="cupnname">
@@ -160,13 +168,20 @@
 	const hotSize = [8, 12, 16, 20, 26, 30];
 	
 	// macchiato build: s, t, g, v, vi
-	const cmHotPumps = [1, 2, 3, 4, 5];
+	const cmHotPumps = [1, 2, 3, 4, 5, 0];
 	
 	// americano build: s, t, g, v, vi
-	const aHotShots = [1, 2, 3, 4, 4];
+	const aHotShots = [1, 2, 3, 4, 4, 0];
 	
 	// flat white build: s, t, g, v, vi
-	const fwHotShots = [2, 2, 3, 3, 4];
+	const fwHotShots = [2, 2, 3, 3, 4, 0];
+	
+	// frappuccino standard build chart
+	// t, g, v
+	const frapPumps = [0, 2, 3, 0, 4, 0];
+	
+	// cold brew standard build
+	const cbPumps = [0, 1, 2, 0, 3, 4];
 	
 	class baseDrink { // mommy class
 		constructor(shots, milk, pumps, whip, size, top, syrup, name) {
@@ -206,7 +221,8 @@
 		let ice = document.getElementById("icedbox");
 		if (ice.checked && drink.size > 8) {addice()}
 		if (drink.shots != 0 && drink.name != "Caramel Macchiato") {addshots(drink)} else {addtopespresso(drink)}
-		if (drink.milk != 0) {addmilk(drink)}
+		if (drink.milk != 0 && drink.name != "Shaken Espresso") {addmilk(drink)}
+		//if (drink.name == "Shaken Espresso") {addice(); addsplashmilk(drink)}
 		if (drink.pumps != 0 && drink.syrup != 0) {addsyrup(drink)}
 		if (drink.whip != 0) {addwhip(drink)}
 		if (drink.top != 0) {addtopping(drink)}
@@ -265,10 +281,26 @@
 		console.log(FlatWhite);
 	}
 	
+	//function buildShakenEspresso(size) {
+		//if (checkbadsize(size)) {return};
+	//	if (size == 0 || size == 5) {
+	//	document.getElementById("drinkname").style.visibility = 'visible';
+	//	document.getElementById("drinkname").innerHTML = "Not Available";
+	//	return};
+	//	let ShakenEspresso = new baseDrink(aHotShots[size], "2% milk", hotPumps[size], 0, hotSize[size], 0, "classic", "Shaken Espresso (Shake it!)");
+	//	addcomponent(ShakenEspresso);
+	//	console.log(ShakenEspresso);
+	//}
+	
 	// add components
 	function addmilk(drink) {
 		document.getElementById("milk").innerHTML = drink.milk;
 		document.getElementById("milk").style.visibility = 'visible';
+	}
+	
+	function addsplashmilk(drink) {
+		document.getElementById("splashmilk").innerHTML = drink.milk;
+		document.getElementById("splashmilk").style.visibility = 'visible';
 	}
 	
 	function addshots(drink) {
@@ -309,15 +341,11 @@
 	// clear cup
 	
 	function clearfunction() {
-		document.getElementById("espresso").style.visibility = 'collapse';
-		document.getElementById("milk").style.visibility = 'collapse';
-		document.getElementById("syrup").style.visibility = 'collapse';
-		document.getElementById("whip").style.visibility = 'collapse';
-		document.getElementById("topping").style.visibility = 'collapse';
-		document.getElementById("topespresso").style.visibility = 'collapse';
-		document.getElementById("splashmilk").style.visibility = 'collapse';
-		document.getElementById("ice").style.visibility = 'collapse';
+		
 		document.getElementById("drinkname").style.visibility = 'hidden';
+		
+		let drinkComponents = document.getElementsByClassName("drink-component");
+		for (let e of drinkComponents) {e.style.visibility = "collapse"};
 	}
 	
 	</script>
